@@ -1,0 +1,9 @@
+listeners:
+  client:
+    protocol: PLAINTEXT
+provisioning:
+  enabled: true
+  topics:
+  - name: testCommand
+    partitions: 32
+    replicationFactor: 1

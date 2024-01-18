@@ -1,0 +1,16 @@
+service:
+  port: 8082
+
+extraEnv:
+- name: SERVER_PORT
+  value: "8082"
+- name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+  value: "kafka.demo-kafka.svc.cluster.local:9092"
+- name: SPRING_DATASOURCE_URL
+  value: "jdbc:postgresql://postgres-postgresql.demo-postgres.svc.cluster.local:5432/postgres"
+- name: SPRING_DATASOURCE_USERNAME
+  value: "postgres"
+- name: SPRING_DATASOURCE_PASSWORD
+  value: "MyTopSecretPassword"
+- name: MANAGEMENT_SERVER_PORT
+  value: "8081"

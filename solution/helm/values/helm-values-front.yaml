@@ -1,0 +1,27 @@
+service:
+  port: 8080
+
+extraEnv:
+- name: SERVER_PORT
+  value: "8080"
+- name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+  value: kafka.demo-kafka.svc.cluster.local:9092
+- name: LOGGING_LEVEL_ROOT
+  value: WARN
+- name: LOGGING_LEVEL_DB_DEMO
+  value: INFO
+- name: MANAGEMENT_SERVER_PORT
+  value: "8081"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: front.127.0.0.1.nip.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+  - secretName: tls-cert
+    hosts:
+    - front.127.0.0.1.nip.io
