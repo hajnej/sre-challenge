@@ -39,7 +39,8 @@ jobs:
       run: ./gradlew clean build
 
 # Build docker images
-
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to Docker Hub
@@ -51,6 +52,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: app/${{ matrix.apps }}/build/libs/
+        platforms: linux/amd64,linux/arm64
         file: app/${{ matrix.apps }}/src/main/docker/Dockerfile
         push: true
         tags: docker.io/hajney/${{ matrix.apps }}:0.1.0

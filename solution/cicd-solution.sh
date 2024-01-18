@@ -11,4 +11,4 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 
 # Deploy ArgoCD
 helm repo add argo https://argoproj.github.io/argo-helm
-helm install --create-namespace --namespace argocd argo/argo-cd
+helm install --create-namespace --namespace argocd  argpcd argo/argo-cd --atomic
