@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: registry-1.docker.io/bitnamicharts
+    targetRevision: 13.3.0
+    helm:
+      values: |
+        global:
+          postgresql:
+            auth:
+              postgresPassword: MyTopSecretPassword
+
+    chart: postgresql
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: demo-postgres
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: registry-1.docker.io/bitnamicharts
+    targetRevision: 26.7.1
+    helm:
+      values: |
+        listeners:
+          client:
+            protocol: PLAINTEXT
+        provisioning:
+          enabled: true
+          topics:
+          - name: testCommand
+            partitions: 32
+            replicationFactor: 1
+    chart: kafka
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: demo-kafka
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
