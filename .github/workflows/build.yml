@@ -53,6 +53,6 @@ jobs:
         context: app/${{ matrix.apps }}/build/libs/
         file: app/${{ matrix.apps }}/src/main/docker/Dockerfile
         push: true
-        tags: ${{ matrix.apps }}:latest
+        tags: docker.io/hajney/${{ matrix.apps }}:0.1.0
 
       
