@@ -29,14 +29,5 @@ for microservice in ${MICROSERVICES}; do
   helm install --create-namespace -n demo-${microservice} --atomic ${microservice} ./solution/helm/charts/${microservice} --values ./solution/helm/values/helm-values-${microservice}.yaml
 done
 
-# Generate certificates for Ingress
-openssl req -subj '/CN=hajnej/O=hajnej/C=CZ' -new -newkey rsa:4096 -sha512 -days 365 -nodes -x509 -keyout server.key -out server.crt
-for ns in demo-front demo-reader; do
-  kubectl create secret tls tls-cert --key server.key --cert server.crt -n ${ns}
-done
-
-# Cleanup
-rm server.key server.crt
-
 # Print some info message how to access the exposed API
 printf "You can now access exposed APIs on https://front.127.0.0.1.nip.io/swagger-ui.html or https://reader.127.0.0.1.nip.io/swagger-ui.html. Please bear in mind self-signed certifiate is used for TLS termination."
