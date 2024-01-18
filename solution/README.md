@@ -85,3 +85,5 @@ GitHub Actions workflow is stored in `.github/workflows/build.yml`
 
 ### Bootstrap kind cluster, deploy ArgoCD to deploy application declaratively
 
+Run `./solution/cicd-solution.sh` to bootstrap ArgoCD and create a 'root' ArgoCD application that in turn creates ArgoCD applications for front, back, reader, kafka and postgres.
+Due app-of-apps pattern and sync-waves the dependencies are created first and the sre-challenge microservices are deployed after kafka and postgres applications are ready.
