@@ -1,6 +1,62 @@
 # sre-challenege solution
 
+solution directory layout:
 
+```
+solution/
+├── README.md
+├── argocd-apps          # Directory with ArgoCD Application manifests
+│   ├── back-app.yaml
+│   ├── front-app.yaml
+│   ├── kafka-app.yaml
+│   ├── postgres-app.yaml
+│   └── reader-app.yaml
+├── cicd-solution.sh     # Bash script that bootstraps kind cluster and deploy ArgoCD to deploy sre-challenge apps and its dependencies declaratively
+├── helm                 # Directory with Helm related files and directories
+│   ├── charts           # Directory with Helm Charts for back, front and reader microservice 
+│   │   ├── back
+│   │   │   ├── Chart.yaml
+│   │   │   ├── templates
+│   │   │   │   ├── NOTES.txt
+│   │   │   │   ├── _helpers.tpl
+│   │   │   │   ├── deployment.yaml
+│   │   │   │   ├── hpa.yaml
+│   │   │   │   ├── ingress.yaml
+│   │   │   │   ├── service.yaml
+│   │   │   │   └── serviceaccount.yaml
+│   │   │   └── values.yaml
+│   │   ├── front
+│   │   │   ├── Chart.yaml
+│   │   │   ├── templates
+│   │   │   │   ├── NOTES.txt
+│   │   │   │   ├── _helpers.tpl
+│   │   │   │   ├── deployment.yaml
+│   │   │   │   ├── hpa.yaml
+│   │   │   │   ├── ingress.yaml
+│   │   │   │   ├── service.yaml
+│   │   │   │   └── serviceaccount.yaml
+│   │   │   └── values.yaml
+│   │   └── reader
+│   │       ├── Chart.yaml
+│   │       ├── templates
+│   │       │   ├── NOTES.txt
+│   │       │   ├── _helpers.tpl
+│   │       │   ├── deployment.yaml
+│   │       │   ├── hpa.yaml
+│   │       │   ├── ingress.yaml
+│   │       │   ├── service.yaml
+│   │       │   └── serviceaccount.yaml
+│   │       └── values.yaml
+│   └── values                             # Helm Chart values for sre-challenge microservices + Kafka and PostgreSQL
+│       ├── helm-values-back.yaml
+│       ├── helm-values-front.yaml
+│       ├── helm-values-kafka.yaml
+│       ├── helm-values-postgres.yaml
+│       └── helm-values-reader.yaml
+├── kind-config.yaml                       # Configuration for KIND cluster, necessary for Nginx Ingress Controller 
+├── quick-solution.sh                      # Bash script that bootstraps kind cluster and deploy sre-challenge apps and its dependencies imperatively
+└── root.yaml                              # A root ArgoCD Application that creates sre-challenge ArgoCD applications to use app-of-apps pattern
+```
 
 ## Code Build & Docker build
 
@@ -79,11 +135,27 @@ Invoke `solution/quick-solution.sh` to build jars, container images, bootstrap [
 
 ## CICD solution
 
-### Use GitHub Actions to build the jars, container images and push them to dockerhub (
+### Use GitHub Actions to build the jars, container images and push them to dockerhub
 
-GitHub Actions workflow is stored in `.github/workflows/build.yml`
+GitHub Actions workflow is stored in `.github/workflows/build.yml`, it builds the code, build multiplatform image for linux/amd64 and linux/arm64 and push it into dockerhub.
 
 ### Bootstrap kind cluster, deploy ArgoCD to deploy application declaratively
 
 Run `./solution/cicd-solution.sh` to bootstrap ArgoCD and create a 'root' ArgoCD application that in turn creates ArgoCD applications for front, back, reader, kafka and postgres.
 Due app-of-apps pattern and sync-waves the dependencies are created first and the sre-challenge microservices are deployed after kafka and postgres applications are ready.
+
+## Cleanup
+
+The simplest way how to cleanup the stuff deployed on KIND cluster is to tear it down.
+
+```bash
+kind delete cluster
+```
+
+## Further ideas
+
+* Kafka can be deployed via [Strimzi Kubernetes Operator](https://strimzi.io/) Kubernetes Operator
+* PostgreSQL can be deployed via [Crunchy PosgreSQL Operator](https://access.crunchydata.com/documentation/postgres-operator/latest)
+* Secret Management is not addresses one simple solution could be [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)
+* Certificate for Ingress can be created either via `openssl` or even better use [cert-manager](https://cert-manager.io/) Kubernetes addon
+* Helm Charts can be packaged and pushed to Helm Chart repository leveraging e.g. GitHub

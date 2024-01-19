@@ -40,8 +40,7 @@ spec:
                 - path: /
                   pathType: ImplementationSpecific
           tls:
-          - secretName: tls-cert
-            hosts:
+          - hosts:
             - reader.127.0.0.1.nip.io
 
   destination:
